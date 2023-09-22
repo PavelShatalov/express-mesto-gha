@@ -15,7 +15,7 @@ module.exports.createCard = (req, res) => {
     return res.status(400).send({ message: 'Некорректные данные' });
   }
   Card.create({ name, link })
-    .then((card) => res.status(201).send({ _id: card._id })) // Изменено на status 201 и возврат _id
+    .then((card) => res.status(200).send({ id: card._id })) //
     .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
 };
 // создаёт карточку с переданными в теле запроса name и link
