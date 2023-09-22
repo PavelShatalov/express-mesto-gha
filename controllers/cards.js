@@ -29,10 +29,10 @@ module.exports.deleteCard = (req, res) => {
       if (!card) {
         return res.status(404).send({ message: 'Карточка с указанным _id не найдена' });
       } else {
-        return card.deleteOne().then(() => res.send({ message: 'Пост удалён' }));
+        return card.deleteOne().then(() => res.status(200).send({ message: 'Пост удалён' }));
       }
     })
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch(() => res.status(400).send({ message: 'Произошла ошибка' }));
 }; // удаляет карточку по _id
 
 // module.exports.deleteCard = (req, res, next) => {
