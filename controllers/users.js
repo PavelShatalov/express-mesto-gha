@@ -7,10 +7,14 @@ module.exports.getUsers = (req, res) => {
  };
  module.exports.getUserId = (req, res) => {
   // Проверяем существование пользователя с данным ID
-  User.exists({ _id: req.params.userId })
+  const{_id} = req.params.userId;
+  // if (!_id ) {
+  //   return res.status(400).send({ message: 'Некорректные данные' });
+  // }
+  User.exists(_id)
     .then((exists) => {
       if (!exists) {
-        res.status(404).send({ message: 'Пользователь с указанным _id не существует.' });
+        res.status(400).send({ message: 'Пользователь с указанным _id не существует.' });
       } else {
         // Если пользователь существует, ищем его по ID
         User.findById(req.params.userId)
