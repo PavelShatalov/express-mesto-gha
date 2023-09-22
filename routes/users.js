@@ -6,4 +6,5 @@ router.get('/users/:userId', getUserId); // возвращает пользов�
 router.post('/users', CreateUser); // создаёт пользователя  с переданными в теле запроса name, about и avatar
 router.patch('/users/me', updateUser); // обновляет профиль
 router.patch('/users/me/avatar', updateAvatar); // обновляет аватар
+
 module.exports = router;
