@@ -20,7 +20,7 @@ module.exports.createCard = (req, res) => {
 };
 // создаёт карточку с переданными в теле запроса name и link
 module.exports.deleteCard = (req, res) => {
-  const { cardId } = req.params.cardId;
+  const { cardId } = req.params;
   if (!cardId) {
     return res.status(400).send({ message: 'Передан некорректный _id карточки.' });
   }
