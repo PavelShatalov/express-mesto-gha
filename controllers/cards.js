@@ -26,7 +26,6 @@ module.exports.createCard = (req, res) => {
         avatar: card.owner.avatar,
         _id: card.owner._id,
       }
-
     })) //
     .catch(() => res.status(400).send({ message: 'Произошла ошибка' }));
 };
