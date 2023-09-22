@@ -35,30 +35,10 @@ module.exports.deleteCard = (req, res) => {
     .catch(() => res.status(400).send({ message: 'Произошла ошибка' }));
 }; // удаляет карточку по _id
 
-// module.exports.deleteCard = (req, res, next) => {
-//   const { cardId } = req.params;
-//   Card.findById(cardId)
-//     .then((card) => {
-//       if (card === null) {
-//         throw new NotFound('Карточка с указанным _id не найдена.');
-//       }
-//       if (card.owner.toString() !== req.user._id) {
-//         throw new Forbidden('Вы не можете удалить карточку друго пользователя');
-//       }
-//       return card.deleteOne().then(() => res.send({ message: 'Пост удалён' }));
-//     })
-//     .catch((err) => {
-//       if (err.name === 'CastError') {
-//         next(new BadRequest('Переданы некорректные данные для удаления карточки.'));
-//       } else {
-//         next(err);
-//       }
-//     });
-// };
 
 
 module.exports.likeCard = (req, res) => {
-  const { cardId } = req.params.cardId;
+  const { cardId } = req.params;
   const { _id: userId } = req.user;
 
   // Проверка на корректность ObjectId
@@ -77,16 +57,16 @@ module.exports.likeCard = (req, res) => {
         return res.status(404).send({ message: 'Карточка с указанным _id не найдена.' });
       }
       // Вернуть обновленную карточку
-      return res.send(card);
+      return res.status(200).send(card);
     })
     .catch((err) => {
       // Обработка ошибок базы данных
       console.error(err);
-      res.status(500).send({ message: 'Ошибка сервера. Попробуйте позже.' });
+      res.status(400).send({ message: 'Ошибка сервера. Попробуйте позже.' });
     });
 };
 module.exports.dislikeCard = (req, res) => {
-  const { cardId } = req.params.cardId;
+  const { cardId } = req.params;
   const { _id: userId } = req.user;
 
   // Проверка на корректность ObjectId
