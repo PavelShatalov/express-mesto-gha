@@ -7,12 +7,9 @@ module.exports.getUsers = (req, res) => {
 };
 module.exports.getUserId = (req, res) => {
   // Проверяем существование пользователя с данным ID
-  const { _id } = req.params;
-  if (!_id) {
-    return res.status(400).send({ message: 'Некорректные данные' });
-  }
+
   // Если пользователь существует, ищем его по ID
-  User.findById(_id)
+  User.findById(req.params.userId)
     .then((user) => {
       if (!user) {
         return res.status(404).send({ message: 'Пользователь по указанному _id не найден.' });
@@ -22,6 +19,24 @@ module.exports.getUserId = (req, res) => {
     })
     .catch(() => res.status(400).send({ message: 'Произошла ошибка при поиске пользователя.' }));
 };
+
+// module.exports.getUserId = (req, res, next) => {
+//   User.findById(req.params.userId)
+//     .then((user) => {
+//       if (user === null) {
+//         throw new NotFound('Пользователь по указанному _id не найден.');
+//       }
+//       return res.send(user);
+//     })
+//     .catch((err) => {
+//       if (err.name === 'CastError') {
+//         next(new BadRequest('Неверный формат данных в запросе'));
+//       } else {
+//         next(err);
+//       }
+//     });
+// };
+
 
 module.exports.CreateUser = (req, res) => {
   const { name, about, avatar } = req.body;
