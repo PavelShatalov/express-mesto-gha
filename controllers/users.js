@@ -8,16 +8,16 @@ module.exports.getUsers = (req, res) => {
 module.exports.getUserId = (req, res) => {
   // Проверяем существование пользователя с данным ID
   const { _id } = req.params;
-  // if (!_id) {
-  //   return res.status(400).send({ message: 'Некорректные данные' });
-  // }
+  if (!_id) {
+    return res.status(400).send({ message: 'Некорректные данные' });
+  }
   // Если пользователь существует, ищем его по ID
   User.findById(_id)
     .then((user) => {
       if (!user) {
-        res.status(404).send({ message: 'Пользователь по указанному _id не найден.' });
+        return res.status(404).send({ message: 'Пользователь по указанному _id не найден.' });
       } else {
-        res.status(200).json(user);
+        return res.status(200).json(user);
       }
     })
     .catch(() => res.status(400).send({ message: 'Произошла ошибка при поиске пользователя.' }));
