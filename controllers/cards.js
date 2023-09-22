@@ -24,16 +24,38 @@ module.exports.deleteCard = (req, res) => {
   if (!cardId) {
     return res.status(400).send({ message: 'Передан некорректный _id карточки.' });
   }
-  Card.findByIdAndRemove(cardId)
+  Card.findById(cardId)
     .then((card) => {
-      if (!card) {
+      if (card === null) {
         res.status(404).send({ message: 'Карточка с указанным _id не найдена' });
       } else {
-        res.send(card);
+        return card.deleteOne().then(() => res.send({ message: 'Пост удалён' }));
       }
     })
     .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
 }; // удаляет карточку по _id
+
+// module.exports.deleteCard = (req, res, next) => {
+//   const { cardId } = req.params;
+//   Card.findById(cardId)
+//     .then((card) => {
+//       if (card === null) {
+//         throw new NotFound('Карточка с указанным _id не найдена.');
+//       }
+//       if (card.owner.toString() !== req.user._id) {
+//         throw new Forbidden('Вы не можете удалить карточку друго пользователя');
+//       }
+//       return card.deleteOne().then(() => res.send({ message: 'Пост удалён' }));
+//     })
+//     .catch((err) => {
+//       if (err.name === 'CastError') {
+//         next(new BadRequest('Переданы некорректные данные для удаления карточки.'));
+//       } else {
+//         next(err);
+//       }
+//     });
+// };
+
 
 module.exports.likeCard = (req, res) => {
   const { cardId } = req.params.cardId;
