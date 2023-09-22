@@ -8,19 +8,20 @@ module.exports.getCards = (req, res) => {
     .then((cards) => res.send(cards))
     .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
 
- }; // возвращает все карточки
+}; // возвращает все карточки
 module.exports.createCard = (req, res) => {
   const { name, link } = req.body;
-  if (!name || name.length < 2 || name.length > 30 ||  !link) {
+  if (!name || name.length < 2 || name.length > 30 || !link) {
     return res.status(400).send({ message: 'Некорректные данные' });
   }
   Card.create({ name, link })
     .then((card) => res.status(201).send({ _id: card._id })) // Изменено на status 201 и возврат _id
     .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
 };
- // создаёт карточку с переданными в теле запроса name и link
+// создаёт карточку с переданными в теле запроса name и link
 module.exports.deleteCard = (req, res) => {
-  Card.findByIdAndRemove(req.params.cardId)
+  const { cardId } = req.params.cardId;
+  Card.findByIdAndRemove(cardId)
     .then((card) => {
       if (!card) {
         res.status(404).send({ message: 'Карточка с указанным _id не найдена' });
@@ -29,10 +30,10 @@ module.exports.deleteCard = (req, res) => {
       }
     })
     .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
- }; // удаляет карточку по _id
+}; // удаляет карточку по _id
 
- module.exports.likeCard = (req, res) => {
-  const { cardId } = req.params;
+module.exports.likeCard = (req, res) => {
+  const { cardId } = req.params.cardId;
   const { _id: userId } = req.user;
 
   // Проверка на корректность ObjectId
@@ -60,7 +61,7 @@ module.exports.deleteCard = (req, res) => {
     });
 };
 module.exports.dislikeCard = (req, res) => {
-  const { cardId } = req.params;
+  const { cardId } = req.params.cardId;
   const { _id: userId } = req.user;
 
   // Проверка на корректность ObjectId
