@@ -9,7 +9,7 @@ module.exports.getUserId = (req, res) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (!user) {
-        res.status(404).send({ message: 'Пользователь по указанному _id не найден.' });
+        res.status(400).send({ message: 'Пользователь по указанному _id не найден.' });
       } else {
         res.send(user);
       }
@@ -18,7 +18,7 @@ module.exports.getUserId = (req, res) => {
 };
 module.exports.CreateUser = (req, res) => {
   const { name, about, avatar } = req.body;
-  if (!name || name.length < 2 || name.length > 30 || !about || !avatar) {
+  if (!name || name.length < 2 || name.length > 30 || !about || about.length < 2 || about.length > 30  || !avatar) {
     return res.status(400).send({ message: 'Некорректные данные' });
   }
 
