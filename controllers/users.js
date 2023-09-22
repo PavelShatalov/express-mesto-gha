@@ -5,17 +5,28 @@ module.exports.getUsers = (req, res) => {
     .then((users) => res.send(users))
     .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
  };
-module.exports.getUserId = (req, res) => {
-  User.findById(req.params.userId)
-    .then((user) => {
-      if (!user) {
-        res.status(400).send({ message: 'Пользователь по указанному _id не найден.' });
+ module.exports.getUserId = (req, res) => {
+  // Проверяем существование пользователя с данным ID
+  User.exists({ _id: req.params.userId })
+    .then((exists) => {
+      if (!exists) {
+        res.status(404).send({ message: 'Пользователь с указанным _id не существует.' });
       } else {
-        res.send(user);
+        // Если пользователь существует, ищем его по ID
+        User.findById(req.params.userId)
+          .then((user) => {
+            if (!user) {
+              res.status(404).send({ message: 'Пользователь по указанному _id не найден.' });
+            } else {
+              res.send(user);
+            }
+          })
+          .catch(() => res.status(500).send({ message: 'Произошла ошибка при поиске пользователя.' }));
       }
     })
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch(() => res.status(500).send({ message: 'Произошла ошибка при проверке существования пользователя.' }));
 };
+
 module.exports.CreateUser = (req, res) => {
   const { name, about, avatar } = req.body;
   if (!name || name.length < 2 || name.length > 30 || !about || about.length < 2 || about.length > 30  || !avatar) {

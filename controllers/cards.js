@@ -11,13 +11,14 @@ module.exports.getCards = (req, res) => {
  }; // возвращает все карточки
 module.exports.createCard = (req, res) => {
   const { name, link } = req.body;
-  if (!name || !link) {
+  if (!name || name.length < 2 || name.length > 30 ||  !link) {
     return res.status(400).send({ message: 'Некорректные данные' });
   }
   Card.create({ name, link })
-    .then((card) => res.send(card))
+    .then((card) => res.status(201).send({ _id: card._id })) // Изменено на status 201 и возврат _id
     .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
- }; // создаёт карточку с переданными в теле запроса name и link
+};
+ // создаёт карточку с переданными в теле запроса name и link
 module.exports.deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
     .then((card) => {
