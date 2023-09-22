@@ -42,9 +42,9 @@ module.exports.likeCard = (req, res) => {
   const { _id: userId } = req.user;
 
   // Проверка на корректность ObjectId
-  if (!cardId || !userId) {
-    return res.status(400).send({ message: 'Передан некорректный _id карточки.' });
-  }
+  // if (!cardId || !userId) {
+  //   return res.status(400).send({ message: 'Передан некорректный _id карточки.' });
+  // }
 
   Card.findByIdAndUpdate(
     cardId,
@@ -70,9 +70,9 @@ module.exports.dislikeCard = (req, res) => {
   const { _id: userId } = req.user;
 
   // Проверка на корректность ObjectId
-  if (!cardId || !userId) {
-    return res.status(400).send({ message: 'Передан некорректный _id карточки.' });
-  }
+  // if (!cardId || !userId) {
+  //   return res.status(400).send({ message: 'Передан некорректный _id карточки.' });
+  // }
 
   Card.findByIdAndUpdate(
     cardId,
@@ -90,6 +90,6 @@ module.exports.dislikeCard = (req, res) => {
     .catch((err) => {
       // Обработка ошибок базы данных
       console.error(err);
-      res.status(500).send({ message: 'Ошибка сервера. Попробуйте позже.' });
+      res.status(400).send({ message: 'Ошибка сервера. Попробуйте позже.' });
     });
 };
