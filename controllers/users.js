@@ -4,49 +4,41 @@ module.exports.getUsers = (req, res) => {
   User.find({})
     .then((users) => res.send(users))
     .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
- };
- module.exports.getUserId = (req, res) => {
+};
+module.exports.getUserId = (req, res) => {
   // Проверяем существование пользователя с данным ID
-  const{_id} = req.params.userId;
-  if (!_id ) {
+  const { _id } = req.params.userId;
+  if (!_id) {
     return res.status(400).send({ message: 'Некорректные данные' });
   }
-  User.exists(_id)
-    .then((exists) => {
-      if (!exists) {
-        res.status(404).send({ message: 'Пользователь с указанным _id не существует.' });
+  // Если пользователь существует, ищем его по ID
+  User.findById(req.params.userId)
+    .then((user) => {
+      if (!user) {
+        res.status(404).send({ message: 'Пользователь по указанному _id не найден.' });
       } else {
-        // Если пользователь существует, ищем его по ID
-        User.findById(req.params.userId)
-          .then((user) => {
-            if (!user) {
-              res.status(404).send({ message: 'Пользователь по указанному _id не найден.' });
-            } else {
-              res.status(200).send(user);
-            }
-          })
-          .catch(() => res.status(500).send({ message: 'Произошла ошибка при поиске пользователя.' }));
+        res.status(200).json(user);
       }
     })
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка при проверке существования пользователя.' }));
+    .catch(() => res.status(500).send({ message: 'Произошла ошибка при поиске пользователя.' }));
 };
 
 module.exports.CreateUser = (req, res) => {
   const { name, about, avatar } = req.body;
-  if (!name || name.length < 2 || name.length > 30 || !about || about.length < 2 || about.length > 30  || !avatar) {
+  if (!name || name.length < 2 || name.length > 30 || !about || about.length < 2 || about.length > 30 || !avatar) {
     return res.status(400).send({ message: 'Некорректные данные' });
   }
 
   User.create({ name, about, avatar })
     .then((user) => res.send(user))
     .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
- };
- module.exports.updateUser = (req, res) => {
+};
+module.exports.updateUser = (req, res) => {
   User.findByIdAndUpdate(req.user._id, { name: req.body.name, about: req.body.about }, { new: true })
     .then((user) => {
       if (!user) {
         res.status(404).send({ message: 'Пользователь по указанному _id не найден.' });
-      }else if(!req.body.name || !req.body.about) {
+      } else if (!req.body.name || !req.body.about) {
         res.status(400).send({ message: 'Некорректные данные' });
       }
       else {
@@ -54,13 +46,13 @@ module.exports.CreateUser = (req, res) => {
       }
     })
     .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
- }; // обновляет профиль
- module.exports.updateAvatar = (req, res) => {
+}; // обновляет профиль
+module.exports.updateAvatar = (req, res) => {
   User.findByIdAndUpdate(req.user._id, { avatar: req.body.avatar }, { new: true })
     .then((user) => {
       if (!user) {
         res.status(404).send({ message: 'Пользователь по указанному _id не найден.' });
-      } else if(!req.body.avatar) {
+      } else if (!req.body.avatar) {
         res.status(400).send({ message: 'Некорректные данные' });
       }
       else {
@@ -68,4 +60,4 @@ module.exports.CreateUser = (req, res) => {
       }
     })
     .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
- };  // обновляет аватар
+};  // обновляет аватар
