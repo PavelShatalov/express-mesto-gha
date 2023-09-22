@@ -18,9 +18,10 @@ module.exports.getUserId = (req, res) => {
 };
 module.exports.CreateUser = (req, res) => {
   const { name, about, avatar } = req.body;
-  if (!name || !about || !avatar) {
+  if (!name || name<2 || name>30 || !about || !avatar) {
     return res.status(400).send({ message: 'Некорректные данные' });
   }
+
   User.create({ name, about, avatar })
     .then((user) => res.send(user))
     .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
