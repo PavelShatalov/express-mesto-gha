@@ -7,12 +7,12 @@ module.exports.getUsers = (req, res) => {
 };
 module.exports.getUserId = (req, res) => {
   // Проверяем существование пользователя с данным ID
-  const { _id } = req.params.userId;
-  if (!_id) {
-    return res.status(400).send({ message: 'Некорректные данные' });
-  }
+  const { _id } = req.params;
+  // if (!_id) {
+  //   return res.status(400).send({ message: 'Некорректные данные' });
+  // }
   // Если пользователь существует, ищем его по ID
-  User.findById(req.params.userId)
+  User.findById(_id)
     .then((user) => {
       if (!user) {
         res.status(404).send({ message: 'Пользователь по указанному _id не найден.' });
@@ -20,7 +20,7 @@ module.exports.getUserId = (req, res) => {
         res.status(200).json(user);
       }
     })
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка при поиске пользователя.' }));
+    .catch(() => res.status(400).send({ message: 'Произошла ошибка при поиске пользователя.' }));
 };
 
 module.exports.CreateUser = (req, res) => {
