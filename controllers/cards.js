@@ -4,34 +4,22 @@ const Card = require('../models/card'); // импортируем модель
 const BAD_REQUEST = http.STATUS_CODES[400];
 const NOT_FOUND = http.STATUS_CODES[404];
 const INTERNAL_SERVER_ERROR = http.STATUS_CODES[500];
-
+const OK = http.STATUS_CODES[200];
 module.exports.getCards = (req, res) => {
   Card.find({})
-    .then((cards) => res.status(200).send(cards))
+    .then((cards) => res.status(OK).send(cards))
     .catch(() => res.status(INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' }));
 }; // возвращает все карточки
 module.exports.createCard = (req, res) => {
   const { name, link } = req.body;
   Card.create({ name, link })
-    .then((card) => res.status(200).send({
-      likes: card.likes,
-      _id: card._id,
-      name: card.name,
-      link: card.link,
-      owner: {
-        name: card.owner.name,
-        about: card.owner.about,
-        avatar: card.owner.avatar,
-        _id: card.owner._id,
-      },
-    })) //
+    .then((card) => res.status(OK).send({ data: card })) //
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return res.status(BAD_REQUEST).send({ message: 'Произошла ошибка при создании пользователя.' });
       }
       return res.status(INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
     });
-  return res.status(INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
 };
 
 // создаёт карточку с переданными в теле запроса name и link
@@ -68,7 +56,7 @@ module.exports.likeCard = (req, res) => {
         return res.status(NOT_FOUND).send({ message: 'Карточка с указанным _id не найдена.' });
       }
       // Вернуть обновленную карточку
-      return res.status(200).send(card);
+      return res.status(OK).send(card);
     })
     .catch((err) => {
       if (err.name === 'CastError') {

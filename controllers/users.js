@@ -5,6 +5,7 @@ const User = require('../models/user'); // импортируем модель
 const BAD_REQUEST = http.STATUS_CODES[400];
 const NOT_FOUND = http.STATUS_CODES[404];
 const INTERNAL_SERVER_ERROR = http.STATUS_CODES[500];
+const OK = http.STATUS_CODES[200];
 
 module.exports.getUsers = (req, res) => {
   User.find({})
@@ -18,7 +19,7 @@ module.exports.getUserId = (req, res) => {
       if (!user) {
         return res.status(NOT_FOUND).send({ message: 'Пользователь по указанному _id не найден.' });
       }
-      return res.status(200).json(user);
+      return res.status(OK).json(user);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -39,7 +40,6 @@ module.exports.CreateUser = (req, res) => {
       }
       return res.status(INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
     });
-  return res.status(INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
 };
 module.exports.updateUser = (req, res) => {
   User.findByIdAndUpdate(
