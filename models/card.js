@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+
 const cardSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -19,7 +20,7 @@ const cardSchema = new mongoose.Schema({
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'user', // Ссылка на модель пользователя
-      default: []  // По умолчанию — пустой массив
+      default: [], // По умолчанию — пустой массив
     },
   ],
   createdAt: {
