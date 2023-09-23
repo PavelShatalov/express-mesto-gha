@@ -12,9 +12,6 @@ module.exports.getCards = (req, res) => {
 }; // возвращает все карточки
 module.exports.createCard = (req, res) => {
   const { name, link } = req.body;
-  if (!name || name.length < 2 || name.length > 30 || !link) {
-    return res.status(BAD_REQUEST).send({ message: 'Некорректные данные' });
-  }
   Card.create({ name, link })
     .then((card) => res.status(200).send({
       likes: card.likes,

@@ -30,10 +30,7 @@ module.exports.getUserId = (req, res) => {
 
 module.exports.CreateUser = (req, res) => {
   const { name, about, avatar } = req.body;
-  if (!name || name.length < 2 || name.length > 30
-  || !about || about.length < 2 || about.length > 30 || !avatar) {
-    return res.status(BAD_REQUEST).send({ message: 'Некорректные данные' });
-  }
+
   User.create({ name, about, avatar })
     .then((user) => res.send(user))
     .catch((err) => {
@@ -59,16 +56,15 @@ module.exports.updateUser = (req, res) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         return res.status(BAD_REQUEST).send({ message: 'Произошла ошибка при обновлении профиля.' });
-      } if (err.name === 'CastError') {
-        return res.status(NOT_FOUND).send({ message: 'Произошла ошибка при обновлении профиля.' });
       }
       return res.status(INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
     });
 }; // обновляет профиль
-module.exports.updateUser = (req, res) => {
+
+module.exports.updateAvatar = (req, res) => {
   User.findByIdAndUpdate(
     req.user._id,
-    { name: req.body.name, about: req.body.about },
+    { avatar: req.body.avatar },
     { new: true, runValidators: true },
   )
     .then((user) => {
@@ -79,11 +75,8 @@ module.exports.updateUser = (req, res) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(BAD_REQUEST).send({ message: 'Некорректные данные' });
-      } else if (err.name === 'CastError') {
-        res.status(NOT_FOUND).send({ message: 'Пользователь по указанному _id не найден.' });
-      } else {
-        res.status(INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
+        return res.status(BAD_REQUEST).send({ message: 'Произошла ошибка при обновлении аватара.' });
       }
+      return res.status(INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
     });
 };

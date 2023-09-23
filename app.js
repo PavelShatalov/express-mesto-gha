@@ -1,5 +1,8 @@
 // Description: точка входа в приложение  Express
 const express = require('express');
+const http = require('http');
+
+const NOT_FOUND = http.STATUS_CODES[404];
 
 const mongoose = require('mongoose');
 
@@ -19,7 +22,7 @@ app.use(require('./routes/users'));
 
 app.use(require('./routes/cards'));
 
-app.use('*', (req, res) => { res.status(404).send({ message: 'не существующий маршрут' }); });
+app.use('*', (req, res) => { res.status(NOT_FOUND).send({ message: 'не существующий маршрут' }); });
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb', { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     console.log('Успешное подключение к MongoDB');
