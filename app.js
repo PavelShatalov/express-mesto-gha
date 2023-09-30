@@ -16,10 +16,10 @@ app.post('/signin', login);
 app.post('/signup', createUser);
 app.use(auth);
 app.use(routes);
-// app.use((req, res, next) => {
-//   req.user = { _id: '650cea96977061048268ae87' };
-//   next();
-// });
+app.use((req, res, next) => {
+  req.user = { _id: '650cea96977061048268ae87' };
+  next();
+});
 app.use(errors());
 app.use(centralError);
 
