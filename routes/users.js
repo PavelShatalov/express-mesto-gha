@@ -6,7 +6,7 @@ const {
 
 router.get('/users', getUsers); // возвращает всех пользователей
 router.get('/users/:userId', validation.getUser, getUserId); // возвращает пользователя по _id
-router.get('/users/me', validation.getUser, getUserId); // возвращает информацию о текущем пользователе
+router.get('/users/me', getUserId); // возвращает информацию о текущем пользователе
 router.patch('/users/me', validation.updateUser, updateUser); // обновляет профиль
 router.patch('/users/me/avatar', validation.updateAvatar, updateAvatar); // обновляет аватар
 

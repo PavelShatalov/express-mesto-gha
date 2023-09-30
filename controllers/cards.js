@@ -22,10 +22,10 @@ module.exports.createCard = (req, res, next) => {
     .then((card) => res.status(OK).send({ data: card })) //
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new BadRequestError('Произошла ошибка при создании карточки.');
+        next(new BadRequestError('Переданы невалидные данные при создании карточки.'));
       }
-      throw err;
-    }).catch(next);
+      next(err);
+    });
 };// создаёт карточку с переданными в теле запроса name и link
 
 module.exports.deleteCard = (req, res, next) => {
@@ -46,10 +46,10 @@ module.exports.deleteCard = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        throw new BadRequestError('Произошла ошибка при поиске карточки.');
+        next(new BadRequestError('Некорректный ID карточки.'));
       }
-      throw err;
-    }).catch(next);
+      next(err);
+    });
 };// удаляет карточку по _id
 
 module.exports.likeCard = (req, res, next) => {
@@ -71,10 +71,10 @@ module.exports.likeCard = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        throw new BadRequestError('Произошла ошибка при поиске карточки.');
+        next(new BadRequestError('Некорректный ID карточки.'));
       }
-      throw err;
-    }).catch(next);
+      next(err);
+    });
 };
 
 module.exports.dislikeCard = (req, res, next) => {
@@ -95,8 +95,8 @@ module.exports.dislikeCard = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        throw new BadRequestError('Произошла ошибка при поиске карточки.');
+        next(new BadRequestError('Некорректный ID карточки.'));
       }
-      throw err;
-    }).catch(next);
+      next(err);
+    });
 };

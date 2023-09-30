@@ -31,24 +31,10 @@ module.exports.getUserId = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        throw new BadRequestError('Некорректный ID пользователя.');
+        next(new BadRequestError('Некорректный ID пользователя.'));
       }
-      throw err;
-    }).catch(next);
-};
-
-module.exports.CreateUser = (req, res, next) => {
-  const { name, about, avatar } = req.body;
-
-  User.create({ name, about, avatar })
-    .then((user) => res.send(user))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        throw new BadRequestError('Произошла ошибка при создании пользователя.');
-      }
-      if (err.code === 11000) { throw new ConflictError('Пользователь с таким email уже существует.'); }
-      throw err;
-    }).catch(next);
+      next(err);
+    });
 };
 
 module.exports.CreateUser = (req, res, next) => {
@@ -64,11 +50,10 @@ module.exports.CreateUser = (req, res, next) => {
       })
         .then((user) => res.send(user))
         .catch((err) => {
-          if (err.name === 'ValidationError') {
-            throw new BadRequestError('Произошла ошибка при создании пользователя.');
-          }
+          if (err.name === 'ValidationError') { next(new BadRequestError('Переданы невалидный данные.')); }
+          if (err.code === 11000) { next(new ConflictError('Пользователь с таким email уже существует.')); }
           throw err;
-        }).catch(next);
+        });
     })
     .catch(next);
 };
@@ -104,7 +89,6 @@ module.exports.login = (req, res, next) => {
           return res.status(OK).send({ message: 'Авторизация успешна' });
         })
         .catch(next);
-      return res.status(OK).send({ message: 'Авторизация успешна' });
     })
     .catch(next);
 };
@@ -123,10 +107,10 @@ module.exports.updateUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new BadRequestError('Произошла ошибка при обновлении профиля.');
+        next(new BadRequestError('Переданы невалидные данные пользователя.'));
       }
-      throw err;
-    }).catch(next);
+      next(err);
+    });
 }; // обновляет профиль
 
 module.exports.updateAvatar = (req, res, next) => {
@@ -143,8 +127,8 @@ module.exports.updateAvatar = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new BadRequestError('Произошла ошибка при обновлении аватара.');
+        next(new BadRequestError('Передан невалидный аватар пользователя.'));
       }
-      throw err;
-    }).catch(next);
+      next(err);
+    });
 };

@@ -6,14 +6,17 @@ const routes = require('./routes/index');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const centralError = require('./middlewares/centralError');
+const validation = require('./middlewares/validation');
 
 const { PORT = 3000 } = process.env;
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.post('/signin', login);
-app.post('/signup', createUser);
+// app.post('/signin', login);
+// app.post('/signup', createUser);
+app.post('/signin', validation.login, login);
+app.post('/signup', validation.createUser, createUser);
 app.use(auth);
 app.use(routes);
 

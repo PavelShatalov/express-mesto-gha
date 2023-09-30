@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const {
-  NotFoundError,
+  UnauthorizedError,
 } = require('../errors/index');
 
 module.exports = (req, res, next) => {
@@ -8,7 +8,7 @@ module.exports = (req, res, next) => {
   const token = req.cookies.jwt;
   // Проверьте наличие токена
   if (!token) {
-    throw new NotFoundError('Необходима авторизация');
+    throw new UnauthorizedError('Необходима авторизация');
   }
   let payload;
   try {
@@ -20,7 +20,6 @@ module.exports = (req, res, next) => {
 
     next();
   } catch (err) {
-    throw new NotFoundError('Необходима авторизация');
+    throw new UnauthorizedError('Необходима авторизация');
   }
-  throw new NotFoundError('Необходима авторизация');
 };
