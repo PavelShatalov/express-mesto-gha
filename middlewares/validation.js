@@ -3,7 +3,7 @@ const JoiObjectId = require('joi-objectid')(Joi);
 
 const regexImageLink = /^(https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}([-a-zA-Z0-9@:%_+.~#?&//=]*)$/;
 const regexLink = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
-const loginSchema = Joi.object().keys({
+const createUser = Joi.object().keys({
   email: Joi.string().required().email(),
   password: Joi.string().required(),
   name: Joi.string().min(2).max(30),
@@ -33,7 +33,7 @@ const idCardSchema = Joi.object().keys({
   cardId: JoiObjectId(),
 });
 
-const login = celebrate({ body: loginSchema });
+const login = celebrate({ body: createUser });
 const getUser = celebrate({ params: getUserSchema });
 const updateUser = celebrate({ body: updateUserSchema });
 const updateAvatar = celebrate({ body: updateAvatarSchema });

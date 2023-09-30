@@ -16,7 +16,7 @@ app.use(express.urlencoded({ extended: true }));
 // app.post('/signin', login);
 // app.post('/signup', createUser);
 app.post('/signin', validation.login, login);
-app.post('/signup', validation.createUser, createUser);
+app.post('/signup', validation.login, createUser);
 app.use(auth);
 app.use(routes);
 
