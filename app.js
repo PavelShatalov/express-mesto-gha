@@ -1,28 +1,29 @@
 // Description: точка входа в приложение  Express
 const express = require('express');
-const http = require('http');
-
-const NOT_FOUND = http.STATUS_CODES[404];
-
 const mongoose = require('mongoose');
+const { errors } = require('celebrate');
+const routes = require('./routes/index');
+const { login, createUser } = require('./controllers/users');
+const auth = require('./middlewares/auth');
+const centralError = require('./middlewares/centralError');
+const validation = require('./middlewares/validation');
 
 const { PORT = 3000 } = process.env;
-// const PORT = 3000;
 const app = express();
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use((req, res, next) => {
-  req.user = { _id: '650cea96977061048268ae87' };
-  next();
-});
+app.post('/signin', validation.login, login);
+app.post('/signup', validation.createUser, createUser);
+app.use(auth);
+app.use(routes);
+// app.use((req, res, next) => {
+//   req.user = { _id: '650cea96977061048268ae87' };
+//   next();
+// });
+app.use(errors());
+app.use(centralError);
 
-app.use(require('./routes/users'));
-
-app.use(require('./routes/cards'));
-
-app.use('*', (req, res) => { res.status(NOT_FOUND).send({ message: 'не существующий маршрут' }); });
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb', { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     console.log('Успешное подключение к MongoDB');

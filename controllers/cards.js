@@ -1,47 +1,58 @@
 const http = require('http');
 const Card = require('../models/card'); // импортируем модель
+const {
+  BadRequestError,
+  ForbiddenError,
+  NotFoundError,
+} = require('../errors/index');
 
-const BAD_REQUEST = http.STATUS_CODES[400];
-const NOT_FOUND = http.STATUS_CODES[404];
-const INTERNAL_SERVER_ERROR = http.STATUS_CODES[500];
+// const BAD_REQUEST = http.STATUS_CODES[400];
+// const NOT_FOUND = http.STATUS_CODES[404];
+// const INTERNAL_SERVER_ERROR = http.STATUS_CODES[500];
 const OK = http.STATUS_CODES[200];
-module.exports.getCards = (req, res) => {
+// const FORBIDDEN = http.STATUS_CODES[403];
+module.exports.getCards = (req, res, next) => {
   Card.find({})
     .then((cards) => res.status(OK).send(cards))
-    .catch(() => res.status(INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' }));
+    .catch(next);
 }; // возвращает все карточки
-module.exports.createCard = (req, res) => {
+module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
   Card.create({ name, link })
     .then((card) => res.status(OK).send({ data: card })) //
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(BAD_REQUEST).send({ message: 'Произошла ошибка при создании пользователя.' });
+        throw new BadRequestError('Произошла ошибка при создании карточки.');
       }
-      return res.status(INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
-    });
-};
+      throw err;
+    }).catch(next);
+};// создаёт карточку с переданными в теле запроса name и link
 
-// создаёт карточку с переданными в теле запроса name и link
-module.exports.deleteCard = (req, res) => {
+module.exports.deleteCard = (req, res, next) => {
   const { cardId } = req.params;
 
   Card.findById(cardId)
     .then((card) => {
       if (!card) {
-        return res.status(NOT_FOUND).send({ message: 'Карточка с указанным _id не найдена' });
+        throw new NotFoundError('Карточка с указанным _id не найдена.');
       }
-      return card.deleteOne().then(() => res.status(200).send({ message: 'Пост удалён' }));
+
+      // Проверяем, является ли текущий пользователь владельцем карточки
+      if (card.owner.toString() !== req.user.id) {
+        throw new ForbiddenError('У вас нет прав на удаление этой карточки');
+      }
+      // Если пользователь является владельцем, удаляем карточку
+      return card.deleteOne().then(() => res.status(OK).send({ message: 'Пост удалён' }));
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(BAD_REQUEST).send({ message: 'Произошла ошибка при поиске карточки.' });
+        throw new BadRequestError('Произошла ошибка при поиске карточки.');
       }
-      return res.status(INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
-    });
-}; // удаляет карточку по _id
+      throw err;
+    }).catch(next);
+};// удаляет карточку по _id
 
-module.exports.likeCard = (req, res) => {
+module.exports.likeCard = (req, res, next) => {
   const { cardId } = req.params;
   const { _id: userId } = req.user;
 
@@ -53,20 +64,20 @@ module.exports.likeCard = (req, res) => {
     .then((card) => {
       if (!card) {
         // Если карточка не найдена, отправить 404 ошибку
-        return res.status(NOT_FOUND).send({ message: 'Карточка с указанным _id не найдена.' });
+        throw new NotFoundError('Карточка с указанным _id не найдена.');
       }
       // Вернуть обновленную карточку
       return res.status(OK).send(card);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(BAD_REQUEST).send({ message: 'Произошла ошибка при поиске карточки.' });
+        throw new BadRequestError('Произошла ошибка при поиске карточки.');
       }
-      return res.status(INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
-    });
+      throw err;
+    }).catch(next);
 };
 
-module.exports.dislikeCard = (req, res) => {
+module.exports.dislikeCard = (req, res, next) => {
   const { cardId } = req.params;
   const { _id: userId } = req.user;
   Card.findByIdAndUpdate(
@@ -77,15 +88,15 @@ module.exports.dislikeCard = (req, res) => {
     .then((card) => {
       if (!card) {
         // Если карточка не найдена, отправить 404 ошибку
-        return res.status(NOT_FOUND).send({ message: 'Карточка с указанным _id не найдена.' });
+        throw new NotFoundError('Карточка с указанным _id не найдена.');
       }
       // Вернуть обновленную карточку
       return res.send(card);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(BAD_REQUEST).send({ message: 'Произошла ошибка при поиске карточки.' });
+        throw new BadRequestError('Произошла ошибка при поиске карточки.');
       }
-      return res.status(INTERNAL_SERVER_ERROR).send({ message: 'Произошла ошибка' });
-    });
+      throw err;
+    }).catch(next);
 };
