@@ -13,8 +13,8 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.post('/signin', validation.login, login);
-app.post('/signup', validation.createUser, createUser);
+app.use(routes.post('/signin', validation.login, login));
+app.use(routes.post('/signup', validation.createUser, createUser));
 app.use(auth);
 app.use(routes);
 // app.use((req, res, next) => {
