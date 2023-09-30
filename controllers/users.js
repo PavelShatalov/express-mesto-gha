@@ -37,7 +37,7 @@ module.exports.getUserId = (req, res, next) => {
     });
 };
 
-module.exports.CreateUser = (req, res, next) => {
+module.exports.createUser = (req, res, next) => {
   const {
     email, password, name, about, avatar,
   } = req.body;
