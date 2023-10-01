@@ -10,13 +10,13 @@ const {
   NotFoundError,
 } = require('../errors/index');
 
-router.use('*', (req, res, next) => {
-  next(new NotFoundError(`Запрашиваемый ресурс по адресу ${req.path} не найден`));
-});
 router.post('/signin', validation.login, login);
 router.post('/signup', validation.login, createUser);
 router.use('/users', require('./users'));
 router.use('/cards', require('./cards'));
 
+router.use('*', (req, res, next) => {
+  next(new NotFoundError(`Запрашиваемый ресурс по 123 адресу ${req.path} не найден123123`));
+});
 router.use(auth);
 module.exports = { router };

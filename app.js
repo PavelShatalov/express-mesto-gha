@@ -5,8 +5,9 @@ const { errors } = require('celebrate');
 const { router } = require('./routes/index');
 // const { login, createUser } = require('./controllers/users');
 // const auth = require('./middlewares/auth');
-const centralError = require('./middlewares/centralError');
 // const validation = require('./middlewares/validation');
+
+const centralError = require('./middlewares/centralError');
 
 const { PORT = 3000 } = process.env;
 
@@ -17,19 +18,9 @@ const { PORT = 3000 } = process.env;
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-mongoose.connect('mongodb://127.0.0.1:27017/mestodb', { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => {
-    console.log('Успешное подключение к MongoDB');
-    app.listen(PORT, () => {
-      console.log(`App listening on port ${PORT}`);
-    });
-  })
-  .catch((error) => { console.error('Ошибка подключения к MongoDB:', error); });
-
 app.use(router);
 // app.use('*', (req, res, next) => {
-//   next(new NotFoundError(`Запрашиваемый ресурс по адресу ${req.path} не найден`));
+//   next(new NotFoundError(`Запрашиваемый ресурс1 по адресу ${req.path} не найден`));
 // });
 // app.post('/signin', validation.login, login);
 // app.post('/signup', validation.login, createUser);
@@ -39,3 +30,12 @@ app.use(router);
 
 app.use(errors());
 app.use(centralError);
+
+mongoose.connect('mongodb://127.0.0.1:27017/mestodb', { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => {
+    console.log('Успешное подключение к MongoDB');
+    app.listen(PORT, () => {
+      console.log(`App listening on port ${PORT}`);
+    });
+  })
+  .catch((error) => { console.error('Ошибка подключения к MongoDB:', error); });
