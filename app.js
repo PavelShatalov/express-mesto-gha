@@ -2,7 +2,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const { errors } = require('celebrate');
-const routes = require('./routes/index');
+// const router = require('./routes/index');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const centralError = require('./middlewares/centralError');
@@ -27,7 +27,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/mestodb', { useNewUrlParser: true, u
 app.post('/signin', validation.login, login);
 app.post('/signup', validation.login, createUser);
 app.use(auth);
-app.use(routes);
+// app.use(router);
 
 app.use(errors());
 app.use(centralError);
