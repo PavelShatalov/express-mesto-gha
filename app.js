@@ -2,13 +2,18 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const { errors } = require('celebrate');
-// const router = require('./routes/index');
-const { login, createUser } = require('./controllers/users');
-const auth = require('./middlewares/auth');
+const { router } = require('./routes/index');
+// const { login, createUser } = require('./controllers/users');
+// const auth = require('./middlewares/auth');
 const centralError = require('./middlewares/centralError');
-const validation = require('./middlewares/validation');
+// const validation = require('./middlewares/validation');
 
 const { PORT = 3000 } = process.env;
+
+// const {
+//   NotFoundError,
+// } = require('./errors/index');
+
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -22,12 +27,15 @@ mongoose.connect('mongodb://127.0.0.1:27017/mestodb', { useNewUrlParser: true, u
   })
   .catch((error) => { console.error('Ошибка подключения к MongoDB:', error); });
 
-// app.post('/signin', login);
-// app.post('/signup', createUser);
-app.post('/signin', validation.login, login);
-app.post('/signup', validation.login, createUser);
-app.use(auth);
-// app.use(router);
+app.use(router);
+// app.use('*', (req, res, next) => {
+//   next(new NotFoundError(`Запрашиваемый ресурс по адресу ${req.path} не найден`));
+// });
+// app.post('/signin', validation.login, login);
+// app.post('/signup', validation.login, createUser);
+// app.use(auth);
+// app.use('/users', require('./routes/users'));
+// app.use('/cards', require('./routes/cards'));
 
 app.use(errors());
 app.use(centralError);
