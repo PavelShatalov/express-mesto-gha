@@ -22,7 +22,8 @@ app.use(express.urlencoded({ extended: true }));
 
 // app.use(router);
 // app.use(cookieParser());
-app.post('/signin', validation.login, login);
+
+app.post('/signin', validation.signUser, login);
 app.post('/signup', validation.login, createUser);
 app.use('/users', auth, require('./routes/users'));
 app.use('/cards', auth, require('./routes/cards'));

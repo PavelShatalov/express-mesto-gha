@@ -19,7 +19,7 @@ const auth = (req, res, next) => {
       'your-secret-key',
     );
   } catch (err) {
-    next(new UnauthorizedError('Необходима авторизация'));
+    return next(new UnauthorizedError('Необходима авторизация'));
   }
 
   req.user = payload;

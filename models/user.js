@@ -41,6 +41,13 @@ const userSchema = new mongoose.Schema({
   },
 });
 
+userSchema.set('toJSON', {
+  transform(doc, ret) {
+    const newRet = { ...ret }; // Создаем новый объект на основе ret
+    delete newRet.password;
+    return newRet;
+  },
+});
 // userSchema.statics.findUserByCredentials = function findUserByCredentials(email, password) {
 //   // попытаемся найти пользовател по почте
 //   return this.findOne({ email })

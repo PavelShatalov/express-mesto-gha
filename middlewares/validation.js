@@ -10,6 +10,10 @@ const createUser = Joi.object().keys({
   about: Joi.string().min(2).max(30),
   avatar: Joi.string().regex(regexImageLink),
 });
+const validateUser = Joi.object().keys({
+  email: Joi.string().required().email(),
+  password: Joi.string().required(),
+});
 
 const getUserSchema = Joi.object().keys({
   userId: JoiObjectId(),
@@ -34,6 +38,7 @@ const idCardSchema = Joi.object().keys({
 });
 
 const login = celebrate({ body: createUser });
+const signUser = celebrate({ body: validateUser });
 const getUser = celebrate({ params: getUserSchema });
 const updateUser = celebrate({ body: updateUserSchema });
 const updateAvatar = celebrate({ body: updateAvatarSchema });
@@ -47,4 +52,5 @@ module.exports = {
   updateAvatar,
   createCard,
   idCard,
+  signUser,
 };
