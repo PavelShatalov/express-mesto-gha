@@ -1,4 +1,4 @@
-const http = require('http');
+// const http = require('http');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user'); // импортируем модель
@@ -12,7 +12,7 @@ const {
 // const BAD_REQUEST = http.STATUS_CODES[400];
 // const NOT_FOUND = http.STATUS_CODES[404];
 // const INTERNAL_SERVER_ERROR = http.STATUS_CODES[500];
-const OK = http.STATUS_CODES[200];
+// const OK = http.STATUS_CODES[200];
 // const UNAUTHORIZED = http.STATUS_CODES[401];
 
 module.exports.getUsers = (req, res, next) => {
@@ -27,7 +27,7 @@ module.exports.getUserId = (req, res, next) => {
       if (!user) {
         throw new NotFoundError('Пользователь по указанному _id не найден.');
       }
-      return res.status(OK).json(user);
+      return res.json(user);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -86,7 +86,7 @@ module.exports.login = (req, res, next) => {
             secure: true, // Установите true, если используете HTTPS
           });
 
-          return res.status(OK).send({ message: 'Авторизация успешна' });
+          return res.send({ message: 'Авторизация успешна' });
         })
         .catch(next);
     })

@@ -1,4 +1,4 @@
-const http = require('http');
+// const http = require('http');
 const Card = require('../models/card'); // импортируем модель
 const {
   BadRequestError,
@@ -9,17 +9,17 @@ const {
 // const BAD_REQUEST = http.STATUS_CODES[400];
 // const NOT_FOUND = http.STATUS_CODES[404];
 // const INTERNAL_SERVER_ERROR = http.STATUS_CODES[500];
-const OK = http.STATUS_CODES[200];
+// const OK = http.STATUS_CODES[200];
 // const FORBIDDEN = http.STATUS_CODES[403];
 module.exports.getCards = (req, res, next) => {
   Card.find({})
-    .then((cards) => res.status(OK).send(cards))
+    .then((cards) => res.send(cards))
     .catch(next);
 }; // возвращает все карточки
 module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
   Card.create({ name, link })
-    .then((card) => res.status(OK).send({ data: card })) //
+    .then((card) => res.send({ data: card })) //
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError('Переданы невалидные данные при создании карточки.'));
@@ -42,7 +42,7 @@ module.exports.deleteCard = (req, res, next) => {
         throw new ForbiddenError('У вас нет прав на удаление этой карточки');
       }
       // Если пользователь является владельцем, удаляем карточку
-      return card.deleteOne().then(() => res.status(OK).send({ message: 'Пост удалён' }));
+      return card.deleteOne().then(() => res.send({ message: 'Пост удалён' }));
     })
     .catch((err) => {
       if (err.name === 'CastError') {
@@ -67,7 +67,7 @@ module.exports.likeCard = (req, res, next) => {
         throw new NotFoundError('Карточка с указанным _id не найдена.');
       }
       // Вернуть обновленную карточку
-      return res.status(OK).send(card);
+      return res.send(card);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
