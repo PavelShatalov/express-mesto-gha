@@ -7,8 +7,8 @@ const {
 } = require('../controllers/users');
 
 router.get('/', getUsers); // возвращает всех пользователей
-router.get('/:userId', validation.getUser, getUserId); // возвращает пользователя по _id
 router.get('/me', getUserId); // возвращает информацию о текущем пользователе
+router.get('/:userId', validation.getUser, getUserId); // возвращает пользователя по _id
 router.patch('/me', validation.updateUser, updateUser); // обновляет профиль
 router.patch('/me/avatar', validation.updateAvatar, updateAvatar); // обновляет аватар
 

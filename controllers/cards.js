@@ -18,7 +18,8 @@ module.exports.getCards = (req, res, next) => {
 }; // возвращает все карточки
 module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
-  Card.create({ name, link })
+  const owner = req.user._id;
+  Card.create({ name, link, owner })
     .then((card) => res.send({ data: card })) //
     .catch((err) => {
       if (err.name === 'ValidationError') {
@@ -31,7 +32,7 @@ module.exports.createCard = (req, res, next) => {
 
 module.exports.deleteCard = (req, res, next) => {
   const { cardId } = req.params;
-
+  const owner = req.user._id;
   Card.findById(cardId)
     .then((card) => {
       if (!card) {
@@ -39,7 +40,7 @@ module.exports.deleteCard = (req, res, next) => {
       }
 
       // Проверяем, является ли текущий пользователь владельцем карточки
-      if (card.owner.toString() !== req.user.id) {
+      if (card.owner.toString() !== owner) {
         throw new ForbiddenError('У вас нет прав на удаление этой карточки');
       }
       // Если пользователь является владельцем, удаляем карточку
@@ -61,7 +62,7 @@ module.exports.likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     cardId,
     { $addToSet: { likes: userId } }, // добавить userId в массив, если его там нет
-    { new: true },
+    { new: true, runValidators: true },
   )
     .then((card) => {
       if (!card) {
@@ -86,7 +87,7 @@ module.exports.dislikeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     cardId,
     { $pull: { likes: userId } }, // убрать userId из массива
-    { new: true },
+    { new: true, runValidators: true },
   )
     .then((card) => {
       if (!card) {
