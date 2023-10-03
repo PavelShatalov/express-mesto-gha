@@ -10,7 +10,7 @@ const {
   NotFoundError,
 } = require('../errors/index');
 
-router.post('/signin', validation.login, login);
+router.post('/signin', validation.createUser, login);
 router.post('/signup', validation.login, createUser);
 router.use(auth);
 router.use('/users', require('./users'));

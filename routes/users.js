@@ -6,10 +6,10 @@ const {
   getUsers, getUserId, updateUser, updateAvatar,
 } = require('../controllers/users');
 
-router.get('/users', getUsers); // возвращает всех пользователей
-router.get('/users/:userId', validation.getUser, getUserId); // возвращает пользователя по _id
-router.get('/users/me', getUserId); // возвращает информацию о текущем пользователе
-router.patch('/users/me', validation.updateUser, updateUser); // обновляет профиль
-router.patch('/users/me/avatar', validation.updateAvatar, updateAvatar); // обновляет аватар
+router.get('/', getUsers); // возвращает всех пользователей
+router.get('/:userId', validation.getUser, getUserId); // возвращает пользователя по _id
+router.get('/me', getUserId); // возвращает информацию о текущем пользователе
+router.patch('/me', validation.updateUser, updateUser); // обновляет профиль
+router.patch('/me/avatar', validation.updateAvatar, updateAvatar); // обновляет аватар
 
 module.exports = router;
